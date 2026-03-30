@@ -7,7 +7,7 @@ class Database:
         self.config = {
             'host': 'localhost',
             'user': 'root',       
-            'password': '',    
+            'password': 'Asetov01',    
             'database': 'tap_project',
             'charset': 'utf8mb4'
         }
