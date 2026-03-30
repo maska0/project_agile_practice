@@ -11,16 +11,73 @@ class Database:
             'database': 'tap_project',
             'charset': 'utf8mb4'
         }
-        self.init_tables()
-    
-    def get_connection(self):
+
+    def init_tables(self):
+        conn = self.get_connection()
+        if not conn:
+            return
+        cursor = conn.cursor()
         try:
-            conn = mysql.connector.connect(**self.config)
-            return conn
-        except Error as e:
-            print(f"Ошибка подключения: {e}")
-            return None
-    
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS users (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    phone VARCHAR(20) UNIQUE NOT NULL,
+                    name VARCHAR(100),
+                    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS verification_codes (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    phone VARCHAR(20) NOT NULL,
+                    code VARCHAR(10) NOT NULL,
+                    expires_at BIGINT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS events (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    title VARCHAR(255) NOT NULL,
+                    description TEXT,
+                    location VARCHAR(255),
+                    lat DECIMAL(10,8),
+                    lng DECIMAL(11,8),
+                    date DATE,
+                    time TIME,
+                    price DECIMAL(10,2) DEFAULT 0,
+                    category VARCHAR(100),
+                    organizer_id INT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (organizer_id) REFERENCES users(id) ON DELETE CASCADE
+                )
+            """)
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS participants (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    event_id INT NOT NULL,
+                    user_id INT NOT NULL,
+                    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE KEY unique_registration (event_id, user_id),
+                    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                )
+            """)
+            conn.commit()
+            print(" Таблицы созданы")
+        except Exception as e:
+            print(f" Ошибка создания таблиц: {e}")
+        finally:
+            cursor.close()
+            conn.close()
+        def get_connection(self):
+            try:
+                conn = mysql.connector.connect(**self.config)
+                return conn
+            except Error as e:
+                print(f"Ошибка подключения: {e}")
+                return None
+        
 
     
     def create_user(self, phone):
