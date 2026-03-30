@@ -11,6 +11,7 @@ class Database:
             'database': 'tap_project',
             'charset': 'utf8mb4'
         }
+    self.init_tables()
     
     def get_connection(self):
         try:
