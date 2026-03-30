@@ -15,8 +15,8 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: test_db
+          MYSQL_ROOT_PASSWORD: Asetov01
+          MYSQL_DATABASE: tap_project
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -26,8 +26,8 @@ jobs:
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
       DB_USER: root
-      DB_PASSWORD: root
-      DB_NAME: test_db
+      DB_PASSWORD: Asetov01
+      DB_NAME: tap_project
     
     steps:
       - name: Checkout code
