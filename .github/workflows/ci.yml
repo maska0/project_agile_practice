@@ -15,7 +15,7 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: Asetov01
           MYSQL_DATABASE: tap_project
         ports:
           - 3306:3306
@@ -26,7 +26,7 @@ jobs:
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
       DB_USER: root
-      DB_PASSWORD: ""
+      DB_PASSWORD: "Asetov01"
       DB_NAME: tap_project
     
     steps:
